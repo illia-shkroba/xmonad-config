@@ -1,0 +1,37 @@
+---
+name:                xmonad-config
+version:             0.1.0.0
+github:              "illia-shkroba/xmonad-config"
+license:             MIT
+author:              "Illia Shkroba"
+copyright:           "2023 Illia Shkroba"
+
+extra-source-files:
+  - README.md
+  - LICENSE
+
+description: Please see the README on GitHub at <https://github.com/illia-shkroba/xmonad-config#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+  - containers
+  - xmonad
+  - xmonad-contrib
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-export-lists
+  - -Wmissing-home-modules
+  - -Wno-unused-do-bind
+  - -Wpartial-fields
+  - -Wredundant-constraints
+
+executables:
+  xmonad:
+    main: xmonad.hs
+    source-dirs: .
+    ghc-options: []
