@@ -1,50 +1,59 @@
-import qualified Data.Map as M
-import System.Exit (exitSuccess)
-import XMonad
-import XMonad.Actions.WithAll (sinkAll)
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageHelpers (isDialog)
-import XMonad.Hooks.StatusBar
-import XMonad.Layout.MultiToggle
-import XMonad.Layout.MultiToggle.Instances
-import XMonad.StackSet (swapMaster)
-import XMonad.Util.EZConfig (additionalKeys)
-import XMonad.Util.Loggers
-import XMonad.Util.Ungrab (unGrab)
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE NamedFieldPuns        #-}
+{-# LANGUAGE NamedWildCards        #-}
+{-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE QuasiQuotes           #-}
 
--- import XMonad.Hooks.StatusBar.PP
--- import XMonad.Layout.ThreeColumns
--- import XMonad.ManageHook
+import           Data.Map                            (Map)
+import qualified Data.Map                            as Map
+import           Data.String.Interpolate             (__i)
+import           System.Exit                         (exitSuccess)
+import           XMonad
+import           XMonad.Actions.WithAll              (sinkAll)
+import           XMonad.Hooks.DynamicLog
+  ( PP (..)
+  , shorten
+  , wrap
+  , xmobarBorder
+  , xmobarColor
+  , xmobarRaw
+  , xmobarStrip
+  )
+import           XMonad.Hooks.EwmhDesktops           (ewmh, ewmhFullscreen)
+import           XMonad.Hooks.ManageHelpers          (isDialog)
+import           XMonad.Hooks.StatusBar              (statusBarProp, withEasySB)
+import           XMonad.Layout.MultiToggle
+  ( Toggle (..)
+  , mkToggle
+  , single
+  )
+import           XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL))
+import           XMonad.StackSet                     (swapMaster)
+import           XMonad.Util.Loggers                 (logTitles)
+import           XMonad.Util.Ungrab                  (unGrab)
+
 main :: IO ()
 main =
   xmonad .
   ewmhFullscreen .
-  ewmh . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleStrutsKey $
+  ewmh . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleBarKey $
   myConfig
   where
-    toggleStrutsKey :: XConfig Layout -> (KeyMask, KeySym)
-    toggleStrutsKey XConfig {modMask = modMask} = (modMask .|. shiftMask, xK_b)
+    toggleBarKey :: XConfig Layout -> (KeyMask, KeySym)
+    toggleBarKey XConfig {modMask} = (modMask .|. shiftMask, xK_b)
 
+myConfig :: XConfig _layout
 myConfig =
   def
     { keys = myKeys
     , layoutHook = myLayout
     , manageHook = myManageHook
-    , modMask = modMask -- rebind mod to the super key
+    , modMask = mod4Mask -- rebind mod to the super key
     , startupHook = myStartupHook
     , terminal = "st"
-    } `additionalKeys`
-  [ ((modMask, xK_b), spawn "brave")
-  , ((modMask, xK_s), unGrab >> spawn ("scrot " ++ screenshotPath))
-  , ( (modMask .|. shiftMask, xK_s)
-    , unGrab >> spawn ("scrot -s " ++ screenshotPath))
-  , ((modMask, xK_f), sendMessage $ Toggle FULL)
-  ]
-  where
-    modMask = mod4Mask
-    screenshotPath = "~/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
+    }
 
+myLayout :: _layout a
 myLayout = mkToggle (single FULL) (tiled ||| Mirror tiled)
   where
     tiled = Tall nmaster delta ratio
@@ -58,28 +67,41 @@ myLayout = mkToggle (single FULL) (tiled ||| Mirror tiled)
 myManageHook :: ManageHook
 myManageHook = mconcat [className =? "Gimp" --> doFloat, isDialog --> doFloat]
 
+myStartupHook :: X ()
 myStartupHook = do
   spawn "~/.fehbg"
 
-myKeys :: XConfig Layout -> M.Map (ButtonMask, KeySym) (X ())
-myKeys config@(XConfig {modMask = modMask}) =
-  M.fromList
-    [ ((modMask, xK_Return), spawn $ terminal config)
-    , ((modMask, xK_r), spawn $ terminal config ++ " -- lf")
-    , ((modMask .|. shiftMask, xK_Return), windows swapMaster)
-    , ((modMask, xK_q), kill)
+myKeys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
+myKeys config@(XConfig {modMask, terminal}) =
+  Map.fromList
+    [ ((modMask .|. shiftMask, xK_Return), windows swapMaster)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
-    , ( (modMask, xK_c)
-      , spawn
-          "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi" -- %! Restart xmonad
-       )
+    , ( (modMask .|. shiftMask, xK_s)
+      , unGrab >> spawn ("scrot -s " <> screenshotPath))
     , ((modMask .|. shiftMask, xK_t), sinkAll)
+    , ((modMask, xK_Return), spawn terminal)
+    , ((modMask, xK_b), spawn "brave")
+    , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
+    , ((modMask, xK_f), sendMessage $ Toggle FULL)
+    , ((modMask, xK_q), kill)
+    , ((modMask, xK_r), spawn $ terminal <> " -- lf")
+    , ((modMask, xK_s), unGrab >> spawn ("scrot " <> screenshotPath))
     ] <>
   foldr
-    M.delete
+    Map.delete
     (keys def config)
     [(modMask .|. shiftMask, xK_q), (modMask, xK_p)]
+  where
+    screenshotPath = "~/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
+    restartXmonad =
+      [__i|
+      if type xmonad; then
+        xmonad --recompile && xmonad --restart
+      else
+        xmessage 'xmonad not in $PATH: '"$PATH"
+      fi
+    |]
 
 myXmobarPP :: PP
 myXmobarPP =
@@ -90,7 +112,10 @@ myXmobarPP =
     , ppHidden = white . wrap " " ""
     , ppHiddenNoWindows = lowWhite . wrap " " ""
     , ppUrgent = red . wrap (yellow "!") (yellow "!")
-    , ppOrder = \[ws, l, _, wins] -> [ws, l, wins]
+    , ppOrder =
+        \case
+          [ws, l, _, wins] -> [ws, l, wins]
+          xs               -> xs
     , ppExtras = [logTitles formatFocused formatUnfocused]
     }
   where
@@ -104,7 +129,6 @@ myXmobarPP =
            then "untitled"
            else w) .
       shorten 30
-    blue, lowWhite, magenta, red, white, yellow :: String -> String
     magenta = xmobarColor "#ff79c6" ""
     blue = xmobarColor "#bd93f9" ""
     white = xmobarColor "#f8f8f2" ""
