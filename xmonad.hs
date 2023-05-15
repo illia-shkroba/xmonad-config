@@ -88,6 +88,8 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn $ terminal <> " -- lf")
     , ((modMask, xK_s), unGrab >> spawn ("scrot " <> screenshotPath))
+    , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
+    , ((noModMask, xK_F10), spawn "wallpaper")
     ] <>
   foldr
     Map.delete
