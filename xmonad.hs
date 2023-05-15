@@ -69,6 +69,7 @@ myManageHook = mconcat [className =? "Gimp" --> doFloat, isDialog --> doFloat]
 
 myStartupHook :: X ()
 myStartupHook = do
+  spawn "toggle-language"
   spawn "~/.fehbg"
 
 myKeys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
