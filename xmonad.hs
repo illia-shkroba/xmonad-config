@@ -85,6 +85,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
+    , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn $ terminal <> " -- lf")
     , ((modMask, xK_s), unGrab >> spawn ("scrot " <> screenshotPath))
