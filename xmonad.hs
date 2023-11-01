@@ -6,7 +6,7 @@
 
 import           Data.Map                            (Map)
 import qualified Data.Map                            as Map
-import           Data.String.Interpolate             (__i)
+import           Data.String.Interpolate             (__i, i)
 import           System.Exit                         (exitSuccess)
 import           XMonad
 import           XMonad.Actions.WithAll              (sinkAll)
@@ -78,7 +78,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     [ ((modMask .|. shiftMask, xK_Return), windows swapMaster)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
     , ( (modMask .|. shiftMask, xK_s)
-      , unGrab >> spawn ("scrot -s " <> screenshotPath))
+      , unGrab >> spawn [i|scrot -s #{screenshotPath}|])
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), spawn "brave")
@@ -87,10 +87,16 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
-    , ((modMask, xK_r), spawn $ terminal <> " -- lf")
-    , ((modMask, xK_s), unGrab >> spawn ("scrot " <> screenshotPath))
+    , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
+    , ((modMask, xK_s), unGrab >> spawn [i|scrot #{screenshotPath}|])
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
     , ((noModMask, xK_F10), spawn "wallpaper")
+    , ( (noModMask, xK_F2)
+      , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05-|])
+    , ( (noModMask, xK_F3)
+      , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05+|])
+    , ( (noModMask, xK_F4)
+      , spawn [i|wpctl set-mute "$(wpctl-get-default-sink)" toggle|])
     ] <>
   foldr
     Map.delete
