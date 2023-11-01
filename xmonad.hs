@@ -106,10 +106,10 @@ myKeys config@(XConfig {modMask, terminal}) =
     screenshotPath = "~/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
     restartXmonad =
       [__i|
-      if type xmonad; then
-        xmonad --recompile && xmonad --restart
+      if type xmonad-x86_64-linux; then
+        xmonad-x86_64-linux --recompile && xmonad-x86_64-linux --restart
       else
-        xmessage 'xmonad not in $PATH: '"$PATH"
+        xmessage 'xmonad-x86_64-linux not in $PATH: '"$PATH"
       fi
     |]
 
