@@ -62,25 +62,6 @@ myConfig =
     workspaces :: [WorkspaceId]
     workspaces = show <$> [1 .. 9 :: Int]
 
-myLayout :: _layout a
-myLayout = mkToggle (single FULL) (tiled ||| Mirror tiled)
-  where
-    tiled = Tall nmaster delta ratio
-    -- threeColMid = ThreeColMid nmaster delta ratio
-    nmaster = 1 -- default number of masters
-    ratio = 1 / 2 -- default ratio occupied by master
-    delta = 3 / 100 -- default ratio of screen to increment by when resizing
-
--- run xprop command on window
--- the second string in WM_CLASS is the class name
-myManageHook :: ManageHook
-myManageHook = mconcat [className =? "Gimp" --> doFloat, isDialog --> doFloat]
-
-myStartupHook :: X ()
-myStartupHook = do
-  spawn "toggle-language"
-  spawn "~/.fehbg"
-
 myKeys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 myKeys config@(XConfig {modMask, terminal}) =
   Map.fromList
@@ -195,6 +176,25 @@ help =
     F10        Pick a wallpaper from $XDG_DATA_HOME/wallpapers/
     Shift-F10  Pick a random wallpaper from $XDG_DATA_HOME/wallpapers/
 |]
+
+myLayout :: _layout a
+myLayout = mkToggle (single FULL) (tiled ||| Mirror tiled)
+  where
+    tiled = Tall nmaster delta ratio
+    -- threeColMid = ThreeColMid nmaster delta ratio
+    nmaster = 1 -- default number of masters
+    ratio = 1 / 2 -- default ratio occupied by master
+    delta = 3 / 100 -- default ratio of screen to increment by when resizing
+
+-- run xprop command on window
+-- the second string in WM_CLASS is the class name
+myManageHook :: ManageHook
+myManageHook = mconcat [className =? "Gimp" --> doFloat, isDialog --> doFloat]
+
+myStartupHook :: X ()
+myStartupHook = do
+  spawn "toggle-language"
+  spawn "~/.fehbg"
 
 myXmobarPP :: PP
 myXmobarPP =
