@@ -28,7 +28,7 @@ import           XMonad.Layout.MultiToggle
   , single
   )
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL))
-import           XMonad.StackSet                     (swapMaster)
+import           XMonad.StackSet                     (sink, swapMaster)
 import           XMonad.Util.Loggers                 (logTitles)
 import           XMonad.Util.Ungrab                  (unGrab)
 
@@ -88,6 +88,8 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
     , ( (modMask .|. shiftMask, xK_s)
       , unGrab >> spawn [i|scrot -s #{screenshotPath}|])
+    , ((modMask .|. shiftMask, xK_slash), helpCommand)
+    , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), spawn "brave")
@@ -98,6 +100,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
     , ((modMask, xK_s), unGrab >> spawn [i|scrot #{screenshotPath}|])
+    , ((modMask, xK_t), withFocused $ windows . sink)
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
     , ((noModMask, xK_F10), spawn "wallpaper")
     , ( (noModMask, xK_F2)
@@ -121,6 +124,77 @@ myKeys config@(XConfig {modMask, terminal}) =
         xmessage 'xmonad-x86_64-linux not in $PATH: '"$PATH"
       fi
     |]
+
+helpCommand :: X ()
+helpCommand = xmessage help
+
+help :: String
+help =
+  [__i|
+    The modifier key used is 'Super'. Defined keybindings:
+
+    -- launching and killing programs
+    mod-Enter        Launch st
+    mod-d            Launch dmenu
+    mod-q            Close/kill the focused window
+    mod-b            Launch brave
+    mod-p            Launch passmenu
+    mod-r            Launch lf
+    mod-s            Take a screenshot
+    mod-f            Toggle fullscreen
+    mod-Space        Rotate through the available layout algorithms
+    mod-Shift-Space  Reset the layouts on the current workSpace to default
+    mod-Shift-/      Show this help message
+    mod-Shift-s      Take a screenshot of a selected area
+
+    -- move focus up or down the window stack
+    mod-Tab        Move focus to the next window
+    mod-Shift-Tab  Move focus to the previous window
+    mod-j          Move focus to the next window
+    mod-k          Move focus to the previous window
+    mod-m          Move focus to the master window
+
+    -- modifying the window order
+    mod-Shift-Return   Swap the focused window and the master window
+    mod-Shift-j        Swap the focused window with the next window
+    mod-Shift-k        Swap the focused window with the previous window
+
+    -- resizing the master/slave ratio
+    mod-h  Shrink the master area
+    mod-l  Expand the master area
+
+    -- floating layer support
+    mod-t        Push window back into tiling; unfloat and re-tile it
+    mod-Shift-t  Push all windows back into tiling; unfloat and re-tile them
+
+    -- increase or decrease number of windows in the master area
+    mod-comma  (mod-,)   Increment the number of windows in the master area
+    mod-period (mod-.)   Deincrement the number of windows in the master area
+
+    -- quit, or restart
+    mod-Shift-c  Quit xmonad
+    mod-c        Restart xmonad
+
+    -- Workspaces & screens
+    mod-[1..9]        Switch to workSpace N
+    mod-Shift-[1..9]  Move client to workspace N
+    mod-{w,e}         Switch to physical/Xinerama screens 1, or 2
+    mod-Shift-{w,e}   Move client to screen 1, or 2
+
+    -- Mouse bindings: default actions bound to mouse events
+    mod-button1  Set the window to floating mode and move by dragging
+    mod-button2  Raise the window to the top of the stack
+    mod-button3  Set the window to floating mode and resize by dragging
+
+    -- Volume
+    F2  Decrease volume of a default sink
+    F3  Increase volume of a default sink
+    F4  Mute a default sink
+
+    -- Wallpaper
+    F10        Pick a wallpaper from $XDG_DATA_HOME/wallpapers/
+    Shift-F10  Pick a random wallpaper from $XDG_DATA_HOME/wallpapers/
+|]
 
 myXmobarPP :: PP
 myXmobarPP =
