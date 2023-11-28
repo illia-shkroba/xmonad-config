@@ -45,13 +45,22 @@ main =
 myConfig :: XConfig _layout
 myConfig =
   def
-    { keys = myKeys
+    { borderWidth = 1
+    , clickJustFocuses = True
+    , focusFollowsMouse = True
+    , focusedBorderColor = "black"
+    , keys = myKeys
     , layoutHook = myLayout
     , manageHook = myManageHook
     , modMask = mod4Mask -- rebind mod to the super key
+    , normalBorderColor = "gray"
     , startupHook = myStartupHook
     , terminal = "st"
+    , workspaces = workspaces
     }
+  where
+    workspaces :: [WorkspaceId]
+    workspaces = show <$> [1 .. 9 :: Int]
 
 myLayout :: _layout a
 myLayout = mkToggle (single FULL) (tiled ||| Mirror tiled)
