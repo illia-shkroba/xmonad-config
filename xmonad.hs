@@ -73,7 +73,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
-    , ((modMask, xK_b), spawn "brave")
+    , ((modMask, xK_b), spawn "qutebrowser")
     , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
@@ -118,7 +118,7 @@ help =
     mod-Enter        Launch st
     mod-d            Launch dmenu
     mod-q            Close/kill the focused window
-    mod-b            Launch brave
+    mod-b            Launch qutebrowser
     mod-p            Launch passmenu
     mod-r            Launch lf
     mod-s            Take a screenshot
