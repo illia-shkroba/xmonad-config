@@ -84,6 +84,8 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_t), withFocused $ windows . sink)
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
     , ((noModMask, xK_F10), spawn "wallpaper")
+    , ((noModMask, xK_F11), spawn "brightnessctl -m set 10%- | cut -d ',' -f 4 | dzen2 -p 1")
+    , ((noModMask, xK_F12), spawn "brightnessctl -m set 10%+ | cut -d ',' -f 4 | dzen2 -p 1")
     , ( (noModMask, xK_F2)
       , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05-|])
     , ( (noModMask, xK_F3)
