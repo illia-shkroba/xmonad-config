@@ -82,6 +82,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
     , ((modMask, xK_s), unGrab >> spawn [i|scrot #{screenshotPath}|])
     , ((modMask, xK_t), withFocused $ windows . sink)
+    , ((modMask, xK_y), spawn "clipmenu")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
     , ((noModMask, xK_F10), spawn "wallpaper")
     , ((noModMask, xK_F11), spawn "brightnessctl -m set 10%- | cut -d ',' -f 4 | dzen2 -p 1")
@@ -122,6 +123,7 @@ help =
     mod-q            Close/kill the focused window
     mod-b            Launch qutebrowser
     mod-p            Launch passmenu
+    mod-y            Launch clipmenu
     mod-r            Launch lf
     mod-s            Take a screenshot
     mod-f            Toggle fullscreen
@@ -177,6 +179,10 @@ help =
     -- Wallpaper
     F10        Pick a wallpaper from $XDG_DATA_HOME/wallpapers/
     Shift-F10  Pick a random wallpaper from $XDG_DATA_HOME/wallpapers/
+
+    -- Brightness
+    F11  Decrease brightness by 10%
+    F12  Increase brightness by 10%
 |]
 
 myLayout :: _layout a
