@@ -45,7 +45,6 @@ import           XMonad.Layout.Spacing
   )
 import           XMonad.StackSet                     (sink, swapMaster)
 import           XMonad.Util.Loggers                 (logTitles)
-import           XMonad.Util.Ungrab                  (unGrab)
 
 main :: IO ()
 main =
@@ -91,9 +90,10 @@ myKeys config@(XConfig {modMask, terminal}) =
       , unGrab >> spawn [i|scrot -s #{screenshotPath}|])
     , ((modMask .|. shiftMask, xK_slash), helpCommand)
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
-    , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask .|. shiftMask, xK_h), decScreenSpacing 5 >> decWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_l), incScreenSpacing 5 >> incWindowSpacing 5)
+    , ((modMask .|. shiftMask, xK_semicolon), spawn [i|#{terminal} -- tmux attach|])
+    , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), spawn "qutebrowser")
     , ((modMask, xK_c), spawn restartXmonad)
