@@ -3,6 +3,6 @@ resolver: lts-21.25
 
 extra-deps:
   - git: https://github.com/xmonad/xmonad
-    commit: 5ecdf7591d4f4bc3e44571326e66dfe895393a20
+    commit: b1d9884d2d310b4d1287b52534777dfe402acda8
   - git: https://github.com/xmonad/xmonad-contrib
-    commit: 840d74036637a673c5f9b839517a3c8f643020a5
+    commit: 0dcecb41c57d0ea6ac177ff16511f0db0eb703b8
