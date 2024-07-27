@@ -82,6 +82,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
     , ((modMask, xK_s), unGrab >> spawn [i|scrot #{screenshotPath}|])
+    , ((modMask, xK_semicolon), spawn [i|#{terminal} -- tmux|])
     , ((modMask, xK_t), withFocused $ windows . sink)
     , ((modMask, xK_y), spawn "clipmenu")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
@@ -120,6 +121,7 @@ help =
 
     -- launching and killing programs
     mod-Enter        Launch st
+    mod-;            Launch tmux
     mod-d            Launch dmenu
     mod-q            Close/kill the focused window
     mod-b            Launch qutebrowser
