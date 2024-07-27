@@ -28,6 +28,12 @@ import           XMonad.Layout.MultiToggle
   , single
   )
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL))
+import           XMonad.Layout.Spacing
+  ( smartSpacingWithEdge
+  , toggleScreenSpacingEnabled
+  , toggleSmartSpacing
+  , toggleWindowSpacingEnabled
+  )
 import           XMonad.StackSet                     (sink, swapMaster)
 import           XMonad.Util.Loggers                 (logTitles)
 import           XMonad.Util.Ungrab                  (unGrab)
@@ -67,6 +73,7 @@ myKeys config@(XConfig {modMask, terminal}) =
   Map.fromList
     [ ((modMask .|. shiftMask, xK_Return), windows swapMaster)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
+    , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
     , ((modMask .|. shiftMask, xK_p), spawn "pfilemenu -l 10 -i")
     , ( (modMask .|. shiftMask, xK_s)
       , unGrab >> spawn [i|scrot -s #{screenshotPath}|])
@@ -78,6 +85,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
+    , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
@@ -169,6 +177,10 @@ help =
     mod-{w,e}         Switch to physical/Xinerama screens 1, or 2
     mod-Shift-{w,e}   Move client to screen 1, or 2
 
+    -- Gaps
+    mod-g  Toggle gaps
+    mod-G  Toggle smart gaps (removes/adds gaps when single window is open)
+
     -- Mouse bindings: default actions bound to mouse events
     mod-button1  Set the window to floating mode and move by dragging
     mod-button2  Raise the window to the top of the stack
@@ -189,7 +201,8 @@ help =
 |]
 
 myLayout :: _layout a
-myLayout = mkToggle (single FULL) (tiled ||| Mirror tiled)
+myLayout =
+  smartSpacingWithEdge 5 $ mkToggle (single FULL) (tiled ||| Mirror tiled)
   where
     tiled = Tall nmaster delta ratio
     -- threeColMid = ThreeColMid nmaster delta ratio
