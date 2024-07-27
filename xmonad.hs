@@ -9,6 +9,10 @@ import qualified Data.Map                            as Map
 import           Data.String.Interpolate             (__i, i)
 import           System.Exit                         (exitSuccess)
 import           XMonad
+import           XMonad.Actions.MostRecentlyUsed
+  ( configureMRU
+  , mostRecentlyUsed
+  )
 import           XMonad.Actions.WithAll              (sinkAll)
 import           XMonad.Hooks.DynamicLog
   ( PP (..)
@@ -46,6 +50,7 @@ import           XMonad.Util.Ungrab                  (unGrab)
 main :: IO ()
 main =
   xmonad .
+  configureMRU .
   ewmhFullscreen .
   ewmh . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleBarKey $
   myConfig
@@ -76,7 +81,8 @@ myConfig =
 myKeys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 myKeys config@(XConfig {modMask, terminal}) =
   Map.fromList
-    [ ((modMask .|. shiftMask, xK_Return), windows swapMaster)
+    [ ((mod1Mask, xK_Tab), mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
+    , ((modMask .|. shiftMask, xK_Return), windows swapMaster)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
     , ((modMask .|. shiftMask, xK_equal), setScreenWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
@@ -191,6 +197,9 @@ help =
     mod-Shift-=  Restore gaps size
     mod-Shift-h  Decrease gaps size
     mod-Shift-l  Increase gaps size
+
+    -- Most Recently Used
+    alt-Tab  Move focus to the most recently used window
 
     -- Mouse bindings: default actions bound to mouse events
     mod-button1  Set the window to floating mode and move by dragging
