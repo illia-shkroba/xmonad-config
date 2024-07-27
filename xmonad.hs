@@ -29,7 +29,12 @@ import           XMonad.Layout.MultiToggle
   )
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL))
 import           XMonad.Layout.Spacing
-  ( smartSpacingWithEdge
+  ( decScreenSpacing
+  , decWindowSpacing
+  , incScreenSpacing
+  , incWindowSpacing
+  , setScreenWindowSpacing
+  , smartSpacingWithEdge
   , toggleScreenSpacingEnabled
   , toggleSmartSpacing
   , toggleWindowSpacingEnabled
@@ -73,6 +78,7 @@ myKeys config@(XConfig {modMask, terminal}) =
   Map.fromList
     [ ((modMask .|. shiftMask, xK_Return), windows swapMaster)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
+    , ((modMask .|. shiftMask, xK_equal), setScreenWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
     , ((modMask .|. shiftMask, xK_p), spawn "pfilemenu -l 10 -i")
     , ( (modMask .|. shiftMask, xK_s)
@@ -80,6 +86,8 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_slash), helpCommand)
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
     , ((modMask .|. shiftMask, xK_t), sinkAll)
+    , ((modMask .|. shiftMask, xK_h), decScreenSpacing 5 >> decWindowSpacing 5)
+    , ((modMask .|. shiftMask, xK_l), incScreenSpacing 5 >> incWindowSpacing 5)
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), spawn "qutebrowser")
     , ((modMask, xK_c), spawn restartXmonad)
@@ -178,8 +186,11 @@ help =
     mod-Shift-{w,e}   Move client to screen 1, or 2
 
     -- Gaps
-    mod-g  Toggle gaps
-    mod-G  Toggle smart gaps (removes/adds gaps when single window is open)
+    mod-g        Toggle gaps
+    mod-G        Toggle smart gaps (removes/adds gaps when single window is open)
+    mod-Shift-=  Restore gaps size
+    mod-Shift-h  Decrease gaps size
+    mod-Shift-l  Increase gaps size
 
     -- Mouse bindings: default actions bound to mouse events
     mod-button1  Set the window to floating mode and move by dragging
