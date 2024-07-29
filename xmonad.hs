@@ -107,8 +107,8 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_semicolon), spawn [i|#{terminal} -- tmux|])
     , ((modMask, xK_t), withFocused $ windows . sink)
     , ((modMask, xK_y), spawn "clipmenu")
-    , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper -r")
-    , ((noModMask, xK_F10), spawn "wallpaper")
+    , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
+    , ((noModMask, xK_F10), spawn "wallpaper --pick")
     , ((noModMask, xK_F11), spawn "brightnessctl -m set 10%- | cut -d ',' -f 4 | dzen2 -p 1")
     , ((noModMask, xK_F12), spawn "brightnessctl -m set 10%+ | cut -d ',' -f 4 | dzen2 -p 1")
     , ( (noModMask, xK_F2)
@@ -238,7 +238,7 @@ myManageHook = mconcat [className =? "Gimp" --> doFloat, isDialog --> doFloat]
 myStartupHook :: X ()
 myStartupHook = do
   spawn "toggle-language"
-  spawn "~/.fehbg"
+  spawn "wallpaper --load"
 
 myXmobarPP :: PP
 myXmobarPP =
