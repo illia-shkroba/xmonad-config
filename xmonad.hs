@@ -81,10 +81,10 @@ myKeys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 myKeys config@(XConfig {modMask, terminal}) =
   Map.fromList
     [ ((mod1Mask, xK_Tab), mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
-    , ((modMask .|. shiftMask, xK_Return), windows swapMaster)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
     , ((modMask .|. shiftMask, xK_equal), setScreenWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
+    , ((modMask .|. shiftMask, xK_m), windows swapMaster)
     , ((modMask .|. shiftMask, xK_p), spawn "pfilemenu -l 10 -i")
     , ( (modMask .|. shiftMask, xK_s)
       , unGrab >> spawn [i|scrot -s #{screenshotPath}|])
