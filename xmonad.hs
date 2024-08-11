@@ -100,6 +100,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
+    , ((modMask, xK_n), spawn [i|#{terminal} -- ncmpcpp|])
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
@@ -144,9 +145,11 @@ help =
     -- launching and killing programs
     mod-Enter        Launch st
     mod-;            Launch tmux
+    mod-:            Launch tmux attach
     mod-d            Launch dmenu
     mod-q            Close/kill the focused window
     mod-b            Launch qutebrowser
+    mod-n            Launch ncmpcpp
     mod-p            Launch passmenu
     mod-y            Launch clipmenu
     mod-r            Launch lf
