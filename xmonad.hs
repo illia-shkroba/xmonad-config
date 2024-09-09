@@ -6,6 +6,7 @@
 
 import           Data.Map                            (Map)
 import qualified Data.Map                            as Map
+import           Data.Ratio                          ((%))
 import           Data.String.Interpolate             (__i, i)
 import           System.Exit                         (exitSuccess)
 import           XMonad
@@ -24,7 +25,7 @@ import           XMonad.Hooks.DynamicLog
   , xmobarStrip
   )
 import           XMonad.Hooks.EwmhDesktops           (ewmh, ewmhFullscreen)
-import           XMonad.Hooks.ManageHelpers          (isDialog)
+import           XMonad.Hooks.ManageHelpers          (doRectFloat, isDialog)
 import           XMonad.Hooks.StatusBar              (statusBarProp, withEasySB)
 import           XMonad.Layout.MultiToggle
   ( Toggle (..)
@@ -43,7 +44,11 @@ import           XMonad.Layout.Spacing
   , toggleSmartSpacing
   , toggleWindowSpacingEnabled
   )
-import           XMonad.StackSet                     (sink, swapMaster)
+import           XMonad.StackSet
+  ( RationalRect (..)
+  , sink
+  , swapMaster
+  )
 import           XMonad.Util.Loggers                 (logTitles)
 
 main :: IO ()
@@ -100,7 +105,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
-    , ((modMask, xK_n), spawn [i|#{terminal} -- ncmpcpp|])
+    , ((modMask, xK_n), spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|])
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
@@ -236,7 +241,15 @@ myLayout =
 -- run xprop command on window
 -- the second string in WM_CLASS is the class name
 myManageHook :: ManageHook
-myManageHook = mconcat [className =? "Gimp" --> doFloat, isDialog --> doFloat]
+myManageHook =
+  mconcat
+    [ className =? "Gimp" --> doFloat
+    , className =? "ncmpcpp" --> doRectFloat middle
+    , isDialog --> doFloat
+    ]
+  where
+    middle :: RationalRect
+    middle = RationalRect (1 % 4) (1 % 4) (1 % 2) (1 % 2)
 
 myStartupHook :: X ()
 myStartupHook = do
