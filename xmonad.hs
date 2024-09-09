@@ -6,7 +6,6 @@
 
 import           Data.Map                            (Map)
 import qualified Data.Map                            as Map
-import           Data.Ratio                          ((%))
 import           Data.String.Interpolate             (__i, i)
 import           System.Exit                         (exitSuccess)
 import           XMonad
@@ -14,7 +13,7 @@ import           XMonad.Actions.MostRecentlyUsed
   ( configureMRU
   , mostRecentlyUsed
   )
-import           XMonad.Actions.WithAll              (sinkAll)
+import           XMonad.Actions.WithAll              (killOthers, sinkAll)
 import           XMonad.Hooks.DynamicLog
   ( PP (..)
   , shorten
@@ -25,7 +24,7 @@ import           XMonad.Hooks.DynamicLog
   , xmobarStrip
   )
 import           XMonad.Hooks.EwmhDesktops           (ewmh, ewmhFullscreen)
-import           XMonad.Hooks.ManageHelpers          (doRectFloat, isDialog)
+import           XMonad.Hooks.ManageHelpers          (doCenterFloat, isDialog)
 import           XMonad.Hooks.StatusBar              (statusBarProp, withEasySB)
 import           XMonad.Layout.MultiToggle
   ( Toggle (..)
@@ -106,6 +105,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
     , ((modMask, xK_n), spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|])
+    , ((modMask, xK_o), killOthers)
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
@@ -244,12 +244,9 @@ myManageHook :: ManageHook
 myManageHook =
   mconcat
     [ className =? "Gimp" --> doFloat
-    , className =? "ncmpcpp" --> doRectFloat middle
+    , className =? "ncmpcpp" --> doCenterFloat
     , isDialog --> doFloat
     ]
-  where
-    middle :: RationalRect
-    middle = RationalRect (1 % 4) (1 % 4) (1 % 2) (1 % 2)
 
 myStartupHook :: X ()
 myStartupHook = do
