@@ -43,11 +43,7 @@ import           XMonad.Layout.Spacing
   , toggleSmartSpacing
   , toggleWindowSpacingEnabled
   )
-import           XMonad.StackSet
-  ( RationalRect (..)
-  , sink
-  , swapMaster
-  )
+import           XMonad.StackSet                     (sink, swapMaster)
 import           XMonad.Util.Loggers                 (logTitles)
 
 main :: IO ()
@@ -129,7 +125,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     (keys def config)
     [(modMask .|. shiftMask, xK_q), (modMask, xK_p)]
   where
-    screenshotPath = "~/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
+    screenshotPath = "~/media/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
     restartXmonad =
       [__i|
       if type xmonad-x86_64-linux; then
