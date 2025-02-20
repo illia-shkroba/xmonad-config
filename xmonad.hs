@@ -68,7 +68,7 @@ myConfig =
     , layoutHook = myLayout
     , manageHook = myManageHook
     , modMask = mod4Mask -- rebind mod to the super key
-    , normalBorderColor = "gray"
+    , normalBorderColor = "#89b4fa"
     , startupHook = myStartupHook
     , terminal = "st"
     , workspaces = workspaces
@@ -276,8 +276,8 @@ myXmobarPP =
            else w) .
       shorten 30
     magenta = xmobarColor "#ff79c6" ""
-    blue = xmobarColor "#bd93f9" ""
+    blue = xmobarColor "#89b4fa" ""
     white = xmobarColor "#f8f8f2" ""
-    yellow = xmobarColor "#f1fa8c" ""
-    red = xmobarColor "#ff5555" ""
+    yellow = xmobarColor "#f9e2af" ""
+    red = xmobarColor "#f38ba8" ""
     lowWhite = xmobarColor "#bbbbbb" ""
