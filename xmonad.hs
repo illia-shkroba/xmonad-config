@@ -13,6 +13,7 @@ import           XMonad.Actions.MostRecentlyUsed
   ( configureMRU
   , mostRecentlyUsed
   )
+import           XMonad.Actions.WindowGo             (runOrRaise)
 import           XMonad.Actions.WithAll              (killOthers, sinkAll)
 import           XMonad.Hooks.DynamicLog
   ( PP (..)
@@ -95,7 +96,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_semicolon), spawn [i|#{terminal} -- tmux attach|])
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
-    , ((modMask, xK_b), spawn "qutebrowser")
+    , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
     , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle FULL)
