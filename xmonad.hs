@@ -33,6 +33,7 @@ import           XMonad.Layout.MultiToggle
   , single
   )
 import           XMonad.Layout.MultiToggle.Instances (StdTransformers (NBFULL))
+import           XMonad.Layout.NoBorders             (smartBorders)
 import           XMonad.Layout.Spacing
   ( decScreenSpacing
   , decWindowSpacing
@@ -65,12 +66,12 @@ myConfig =
     { borderWidth = 1
     , clickJustFocuses = True
     , focusFollowsMouse = True
-    , focusedBorderColor = "black"
+    , focusedBorderColor = "#89b4fa"
     , keys = myKeys
     , layoutHook = myLayout
     , manageHook = myManageHook
     , modMask = mod4Mask -- rebind mod to the super key
-    , normalBorderColor = "#89b4fa"
+    , normalBorderColor = "#050508"
     , startupHook = myStartupHook
     , terminal = "st"
     , workspaces = workspaces
@@ -226,9 +227,10 @@ help =
     F12  Increase brightness by 10%
 |]
 
-myLayout :: _layout a
+myLayout :: _layout Window
 myLayout =
-  smartSpacingWithEdge 5 $ mkToggle (single NBFULL) (tiled ||| Mirror tiled)
+  smartBorders . smartSpacingWithEdge 5 . mkToggle (single NBFULL) $
+    tiled ||| Mirror tiled
   where
     tiled = Tall nmaster delta ratio
     -- threeColMid = ThreeColMid nmaster delta ratio
