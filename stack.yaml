@@ -1,8 +1,8 @@
 ---
-resolver: lts-21.25
+resolver: lts-23.9
 
 extra-deps:
   - git: https://github.com/xmonad/xmonad
-    commit: b1d9884d2d310b4d1287b52534777dfe402acda8
+    commit: 07d95ad8fc395866200b4587aca8b4db50aa20bd
   - git: https://github.com/xmonad/xmonad-contrib
-    commit: 0dcecb41c57d0ea6ac177ff16511f0db0eb703b8
+    commit: 4496b4f2d54b31dcf68fb5e1ad545b9afbc3dfcd
