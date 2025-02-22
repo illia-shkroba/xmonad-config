@@ -46,6 +46,7 @@ import           XMonad.Layout.Spacing
   )
 import           XMonad.StackSet                     (sink, swapMaster)
 import           XMonad.Util.Loggers                 (logTitles)
+import           XMonad.Util.SpawnOnce               (spawnOnce)
 
 main :: IO ()
 main =
@@ -247,8 +248,11 @@ myManageHook =
 
 myStartupHook :: X ()
 myStartupHook = do
-  spawn "toggle-language"
-  spawn "wallpaper --load"
+  -- `spawnOnce` should be used instead of `spawn` in the `startupHook`.
+  -- `spawnOnce` ensures that a command is executed only once, even when
+  -- `xmonad` is reloaded.
+  spawnOnce "toggle-language"
+  spawnOnce "wallpaper --load"
 
 myXmobarPP :: PP
 myXmobarPP =
