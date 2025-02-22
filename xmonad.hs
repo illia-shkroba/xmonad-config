@@ -251,6 +251,7 @@ myStartupHook = do
   -- `spawnOnce` should be used instead of `spawn` in the `startupHook`.
   -- `spawnOnce` ensures that a command is executed only once, even when
   -- `xmonad` is reloaded.
+  spawnOnce "picom &"
   spawnOnce "toggle-language"
   spawnOnce "wallpaper --load"
 
