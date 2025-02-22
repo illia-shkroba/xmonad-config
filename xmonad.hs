@@ -13,7 +13,7 @@ import           XMonad.Actions.MostRecentlyUsed
   ( configureMRU
   , mostRecentlyUsed
   )
-import           XMonad.Actions.WindowGo             (runOrRaise)
+import           XMonad.Actions.WindowGo             (raiseMaybe, runOrRaise)
 import           XMonad.Actions.WithAll              (killOthers, sinkAll)
 import           XMonad.Hooks.DynamicLog
   ( PP (..)
@@ -103,7 +103,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle NBFULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
-    , ((modMask, xK_n), spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|])
+    , ((modMask, xK_n), raiseMaybe (spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|]) (className =? "ncmpcpp"))
     , ((modMask, xK_o), killOthers)
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
