@@ -32,7 +32,7 @@ import           XMonad.Layout.MultiToggle
   , mkToggle
   , single
   )
-import           XMonad.Layout.MultiToggle.Instances (StdTransformers (FULL))
+import           XMonad.Layout.MultiToggle.Instances (StdTransformers (NBFULL))
 import           XMonad.Layout.Spacing
   ( decScreenSpacing
   , decWindowSpacing
@@ -99,7 +99,7 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
     , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
-    , ((modMask, xK_f), sendMessage $ Toggle FULL)
+    , ((modMask, xK_f), sendMessage $ Toggle NBFULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
     , ((modMask, xK_n), spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|])
     , ((modMask, xK_o), killOthers)
@@ -227,7 +227,7 @@ help =
 
 myLayout :: _layout a
 myLayout =
-  smartSpacingWithEdge 5 $ mkToggle (single FULL) (tiled ||| Mirror tiled)
+  smartSpacingWithEdge 5 $ mkToggle (single NBFULL) (tiled ||| Mirror tiled)
   where
     tiled = Tall nmaster delta ratio
     -- threeColMid = ThreeColMid nmaster delta ratio
