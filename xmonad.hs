@@ -4,6 +4,12 @@
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE QuasiQuotes           #-}
 
+import           Control.Concurrent.MVar
+  ( MVar
+  , modifyMVar_
+  , newMVar
+  , readMVar
+  )
 import           Data.Map                            (Map)
 import qualified Data.Map                            as Map
 import           Data.String.Interpolate             (__i, i)
@@ -50,28 +56,33 @@ import           XMonad.Layout.Spacing
   )
 import           XMonad.StackSet                     (sink, swapMaster)
 import           XMonad.Util.Loggers                 (logTitles)
+import           XMonad.Util.Run
+  ( runProcessWithInputAndWait
+  , seconds
+  )
 import           XMonad.Util.SpawnOnce               (spawnOnce)
 
 main :: IO ()
-main =
+main = do
+  state <- newMVar State {screenkeyEnabled = False}
   xmonad
     . configureMRU
     . ewmhFullscreen
     . ewmh
     . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleBarKey
-    $ myConfig
+    $ myConfig state
   where
     toggleBarKey :: XConfig Layout -> (KeyMask, KeySym)
     toggleBarKey XConfig {modMask} = (modMask .|. shiftMask, xK_b)
 
-myConfig :: XConfig _layout
-myConfig =
+myConfig :: MVar State -> XConfig _layout
+myConfig state =
   def
     { borderWidth = 1
     , clickJustFocuses = True
     , focusFollowsMouse = True
     , focusedBorderColor = "#89b4fa"
-    , keys = myKeys
+    , keys = myKeys state
     , layoutHook = myLayout
     , manageHook = myManageHook
     , modMask = mod4Mask -- rebind mod to the super key
@@ -84,8 +95,8 @@ myConfig =
     workspaces :: [WorkspaceId]
     workspaces = show <$> [1 .. 9 :: Int]
 
-myKeys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
-myKeys config@(XConfig {modMask, terminal}) =
+myKeys :: MVar State -> XConfig Layout -> Map (ButtonMask, KeySym) (X ())
+myKeys state config@(XConfig {modMask, terminal}) =
   Map.fromList
     [ ((mod1Mask, xK_Tab), mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
@@ -110,6 +121,19 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
     , ((modMask, xK_c), spawn restartXmonad)
     , ((modMask, xK_d), spawn "dmenu_run")
+    ,
+      ( (modMask, xK_e)
+      , liftIO . modifyMVar_ state $ \State {screenkeyEnabled} ->
+          if screenkeyEnabled
+            then State {screenkeyEnabled = False} <$ spawn "killall screenkey"
+            else
+              State {screenkeyEnabled = True}
+                <$ runProcessWithInputAndWait
+                  "screenkey"
+                  ["-t", "0.5", "-s", "small", "--opacity", "0.3"]
+                  ""
+                  (seconds 3)
+      )
     , ((modMask, xK_f), sendMessage $ Toggle NBFULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
     ,
@@ -339,3 +363,8 @@ myXmobarPP =
     yellow = xmobarColor "#f9e2af" ""
     red = xmobarColor "#f38ba8" ""
     lowWhite = xmobarColor "#bbbbbb" ""
+
+data State
+  = State
+      { screenkeyEnabled :: Bool
+      }
