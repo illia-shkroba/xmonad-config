@@ -7,7 +7,10 @@
 import           Data.Map                            (Map)
 import qualified Data.Map                            as Map
 import           Data.String.Interpolate             (__i, i)
+import qualified System.Directory                    as Directory
 import           System.Exit                         (exitSuccess)
+import qualified System.FilePath                     as FilePath
+import           System.FilePath                     ((</>))
 import           XMonad
 import           XMonad.Actions.MostRecentlyUsed
   ( configureMRU
@@ -92,7 +95,10 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_p), spawn "pfilemenu -l 10 -i")
     ,
       ( (modMask .|. shiftMask, xK_s)
-      , unGrab >> spawn [i|scrot -s #{screenshotPath}|]
+      , do
+          path <- screenshotPath
+          createParentDirectory path
+          unGrab >> spawn [i|scrot -s #{path}|]
       )
     , ((modMask .|. shiftMask, xK_slash), helpCommand)
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
@@ -116,7 +122,13 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
     , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
-    , ((modMask, xK_s), unGrab >> spawn [i|scrot #{screenshotPath}|])
+    ,
+      ( (modMask, xK_s)
+      , do
+          path <- screenshotPath
+          createParentDirectory path
+          unGrab >> spawn [i|scrot #{path}|]
+      )
     , ((modMask, xK_semicolon), spawn [i|#{terminal} -- tmux|])
     , ((modMask, xK_t), withFocused $ windows . sink)
     , ((modMask, xK_y), spawn "clipmenu")
@@ -148,7 +160,24 @@ myKeys config@(XConfig {modMask, terminal}) =
       (keys def config)
       [(modMask .|. shiftMask, xK_q), (modMask, xK_p)]
   where
-    screenshotPath = "~/media/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
+    screenshotPath :: MonadIO m => m FilePath
+    screenshotPath = liftIO $ do
+      home <- Directory.getHomeDirectory
+      pure $
+        home
+          </> "media"
+          </> "pictures"
+          </> "screenshots"
+          </> "'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
+
+    createParentDirectory :: MonadIO m => FilePath -> m ()
+    createParentDirectory path = liftIO $ do
+      absolutePath <- Directory.makeAbsolute path
+      Directory.createDirectoryIfMissing True . parent $ absolutePath
+
+    parent :: FilePath -> FilePath
+    parent = FilePath.dropFileName . FilePath.dropTrailingPathSeparator
+
     restartXmonad =
       [__i|
       if type xmonad-x86_64-linux; then
