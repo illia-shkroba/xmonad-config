@@ -51,11 +51,12 @@ import           XMonad.Util.SpawnOnce               (spawnOnce)
 
 main :: IO ()
 main =
-  xmonad .
-  configureMRU .
-  ewmhFullscreen .
-  ewmh . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleBarKey $
-  myConfig
+  xmonad
+    . configureMRU
+    . ewmhFullscreen
+    . ewmh
+    . withEasySB (statusBarProp "xmobar" (pure myXmobarPP)) toggleBarKey
+    $ myConfig
   where
     toggleBarKey :: XConfig Layout -> (KeyMask, KeySym)
     toggleBarKey XConfig {modMask} = (modMask .|. shiftMask, xK_b)
@@ -89,8 +90,10 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
     , ((modMask .|. shiftMask, xK_m), windows swapMaster)
     , ((modMask .|. shiftMask, xK_p), spawn "pfilemenu -l 10 -i")
-    , ( (modMask .|. shiftMask, xK_s)
-      , unGrab >> spawn [i|scrot -s #{screenshotPath}|])
+    ,
+      ( (modMask .|. shiftMask, xK_s)
+      , unGrab >> spawn [i|scrot -s #{screenshotPath}|]
+      )
     , ((modMask .|. shiftMask, xK_slash), helpCommand)
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
     , ((modMask .|. shiftMask, xK_h), decScreenSpacing 5 >> decWindowSpacing 5)
@@ -103,7 +106,12 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_d), spawn "dmenu_run")
     , ((modMask, xK_f), sendMessage $ Toggle NBFULL)
     , ((modMask, xK_g), toggleScreenSpacingEnabled >> toggleWindowSpacingEnabled)
-    , ((modMask, xK_n), raiseMaybe (spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|]) (className =? "ncmpcpp"))
+    ,
+      ( (modMask, xK_n)
+      , raiseMaybe
+          (spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|])
+          (className =? "ncmpcpp")
+      )
     , ((modMask, xK_o), killOthers)
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
@@ -114,19 +122,31 @@ myKeys config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_y), spawn "clipmenu")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
     , ((noModMask, xK_F10), spawn "wallpaper --pick")
-    , ((noModMask, xK_F11), spawn "brightnessctl -m set 10%- | cut -d ',' -f 4 | dzen2 -p 1")
-    , ((noModMask, xK_F12), spawn "brightnessctl -m set 10%+ | cut -d ',' -f 4 | dzen2 -p 1")
-    , ( (noModMask, xK_F2)
-      , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05-|])
-    , ( (noModMask, xK_F3)
-      , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05+|])
-    , ( (noModMask, xK_F4)
-      , spawn [i|wpctl set-mute "$(wpctl-get-default-sink)" toggle|])
-    ] <>
-  foldr
-    Map.delete
-    (keys def config)
-    [(modMask .|. shiftMask, xK_q), (modMask, xK_p)]
+    ,
+      ( (noModMask, xK_F11)
+      , spawn "brightnessctl -m set 10%- | cut -d ',' -f 4 | dzen2 -p 1"
+      )
+    ,
+      ( (noModMask, xK_F12)
+      , spawn "brightnessctl -m set 10%+ | cut -d ',' -f 4 | dzen2 -p 1"
+      )
+    ,
+      ( (noModMask, xK_F2)
+      , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05-|]
+      )
+    ,
+      ( (noModMask, xK_F3)
+      , spawn [i|wpctl set-volume "$(wpctl-get-default-sink)" 0.05+|]
+      )
+    ,
+      ( (noModMask, xK_F4)
+      , spawn [i|wpctl set-mute "$(wpctl-get-default-sink)" toggle|]
+      )
+    ]
+    <> foldr
+      Map.delete
+      (keys def config)
+      [(modMask .|. shiftMask, xK_q), (modMask, xK_p)]
   where
     screenshotPath = "~/media/pictures/screenshots/'%Y-%m-%dT%H:%M:%S_$wx$h.png'"
     restartXmonad =
@@ -277,12 +297,13 @@ myXmobarPP =
     formatUnfocused = wrap (lowWhite "[") (lowWhite "]") . blue . ppWindow
     ppWindow :: String -> String
     ppWindow =
-      xmobarRaw .
-      (\w ->
-         if null w
-           then "untitled"
-           else w) .
-      shorten 30
+      xmobarRaw
+        . ( \w ->
+              if null w
+                then "untitled"
+                else w
+          )
+        . shorten 30
     magenta = xmobarColor "#ff79c6" ""
     blue = xmobarColor "#89b4fa" ""
     white = xmobarColor "#f8f8f2" ""
