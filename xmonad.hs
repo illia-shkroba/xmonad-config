@@ -145,7 +145,6 @@ myKeys state config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_o), killOthers)
     , ((modMask, xK_p), spawn "passmenu")
     , ((modMask, xK_q), kill)
-    , ((modMask, xK_r), spawn [i|#{terminal} -- lf|])
     ,
       ( (modMask, xK_s)
       , do
@@ -229,7 +228,7 @@ help =
     mod-n            Launch ncmpcpp
     mod-p            Launch passmenu
     mod-y            Launch clipmenu
-    mod-r            Launch lf
+    mod-e            Toggle screenkey
     mod-s            Take a screenshot
     mod-f            Toggle fullscreen
     mod-Space        Rotate through the available layout algorithms
