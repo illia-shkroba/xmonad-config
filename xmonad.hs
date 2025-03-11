@@ -3,20 +3,25 @@
 {-# LANGUAGE NamedWildCards        #-}
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE QuasiQuotes           #-}
+{-# LANGUAGE ViewPatterns          #-}
 
 import           Control.Concurrent.MVar
   ( MVar
   , modifyMVar_
   , newMVar
-  , readMVar
   )
 import           Data.Map                            (Map)
 import qualified Data.Map                            as Map
 import           Data.String.Interpolate             (__i, i)
+import           Data.Time.Calendar                  (Day, toGregorian)
+import           Data.Time.Clock
+  ( UTCTime (utctDay)
+  , getCurrentTime
+  )
 import qualified System.Directory                    as Directory
 import           System.Exit                         (exitSuccess)
 import qualified System.FilePath                     as FilePath
-import           System.FilePath                     ((</>))
+import           System.FilePath                     ((<.>), (</>))
 import           XMonad
 import           XMonad.Actions.MostRecentlyUsed
   ( configureMRU
@@ -154,6 +159,12 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     , ((modMask, xK_semicolon), spawn [i|#{terminal} -- tmux|])
     , ((modMask, xK_t), withFocused $ windows . sink)
+    ,
+      ( (modMask, xK_v)
+      , do
+          path <- today >>= journalPath
+          spawn [i|#{terminal} -- nvim #{path}|]
+      )
     , ((modMask, xK_y), spawn "clipmenu")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
     , ((noModMask, xK_F10), spawn "wallpaper --pick")
@@ -209,6 +220,21 @@ myKeys state config@(XConfig {modMask, terminal}) =
         xmessage 'xmonad-x86_64-linux not in $PATH: '"$PATH"
       fi
     |]
+
+    today :: MonadIO m => m Day
+    today = liftIO $ utctDay <$> getCurrentTime
+
+    journalPath :: MonadIO m => Day -> m FilePath
+    journalPath (toGregorian -> (year, month, day)) = liftIO $ do
+      home <- Directory.getHomeDirectory
+      pure $
+        home
+          </> "notes"
+          </> "journal"
+          </> show year
+          </> show month
+          </> show day
+          <.> "md"
 
 helpCommand :: X ()
 helpCommand = xmessage help
