@@ -170,7 +170,10 @@ myKeys state config@(XConfig {modMask, terminal}) =
           path <- today >>= journalPath
           spawn [i|#{terminal} -- nvim #{path}|]
       )
-    , ((modMask, xK_y), spawn "clipmenu")
+    ,
+      ( (modMask, xK_y)
+      , spawn "FZF_TERMINAL='st -c clipmenu-fzfmenu' CM_LAUNCHER=fzfclipmenu clipmenu"
+      )
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
     , ((noModMask, xK_F10), spawn "wallpaper --pick")
     ,
@@ -349,6 +352,7 @@ myManageHook =
     [ className =? "Gimp" --> doFloat
     , className =? "ncmpcpp" --> doCenterFloat
     , className =? "qutebrowser-fzfmenu" --> doSideFloat NC
+    , className =? "clipmenu-fzfmenu" --> doSideFloat NC
     , isDialog --> doFloat
     ]
 
