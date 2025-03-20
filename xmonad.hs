@@ -125,7 +125,10 @@ myKeys state config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
     , ((modMask .|. shiftMask, xK_h), decScreenSpacing 5 >> decWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_l), incScreenSpacing 5 >> incWindowSpacing 5)
-    , ((modMask .|. shiftMask, xK_semicolon), spawn [i|#{terminal} -- tmux attach|])
+    ,
+      ( (modMask .|. shiftMask, xK_semicolon)
+      , spawn [i|#{terminal} -c tmux -t tmux -- tmux attach|]
+      )
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
@@ -149,7 +152,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_n)
       , raiseMaybe
-          (spawn [i|#{terminal} -c ncmpcpp -- ncmpcpp|])
+          (spawn [i|#{terminal} -c ncmpcpp -t ncmpcpp -- ncmpcpp|])
           (className =? "ncmpcpp")
       )
     , ((modMask, xK_o), killOthers)
@@ -162,7 +165,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
           createParentDirectory path
           unGrab >> spawn [i|scrot #{path}|]
       )
-    , ((modMask, xK_semicolon), spawn [i|#{terminal} -- tmux|])
+    , ((modMask, xK_semicolon), spawn [i|#{terminal} -c tmux -t tmux -- tmux|])
     , ((modMask, xK_t), withFocused $ windows . sink)
     ,
       ( (modMask, xK_v)
@@ -172,7 +175,8 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     ,
       ( (modMask, xK_y)
-      , spawn "FZF_TERMINAL='st -c clipmenu-fzfmenu' CM_LAUNCHER=fzfclipmenu clipmenu"
+      , spawn
+          [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfclipmenu clipmenu|]
       )
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
     , ((noModMask, xK_F10), spawn "wallpaper --pick")
