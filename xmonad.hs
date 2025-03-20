@@ -113,7 +113,11 @@ myKeys state config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_equal), setScreenWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
     , ((modMask .|. shiftMask, xK_m), windows swapMaster)
-    , ((modMask .|. shiftMask, xK_p), spawn "pfilemenu -l 10 -i")
+    ,
+      ( (modMask .|. shiftMask, xK_p)
+      , spawn
+          [i|FZF_TERMINAL='#{terminal} -c pfilemenu-fzfmenu -t pfilemenu' pfilemenu|]
+      )
     ,
       ( (modMask .|. shiftMask, xK_s)
       , do
@@ -265,6 +269,7 @@ help =
     mod-b            Launch qutebrowser
     mod-n            Launch ncmpcpp
     mod-p            Launch passmenu
+    mod-Shift-p      Launch pfilemenu
     mod-y            Launch clipmenu
     mod-e            Toggle screenkey
     mod-s            Take a screenshot
@@ -357,6 +362,7 @@ myManageHook =
     , className =? "ncmpcpp" --> doCenterFloat
     , className =? "qutebrowser-fzfmenu" --> doSideFloat NC
     , className =? "clipmenu-fzfmenu" --> doSideFloat NC
+    , className =? "pfilemenu-fzfmenu" --> doSideFloat NC
     , isDialog --> doFloat
     ]
 
