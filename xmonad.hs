@@ -39,7 +39,12 @@ import           XMonad.Hooks.DynamicLog
   , xmobarStrip
   )
 import           XMonad.Hooks.EwmhDesktops           (ewmh, ewmhFullscreen)
-import           XMonad.Hooks.ManageHelpers          (doCenterFloat, isDialog)
+import           XMonad.Hooks.ManageHelpers
+  ( Side (NC)
+  , doCenterFloat
+  , doSideFloat
+  , isDialog
+  )
 import           XMonad.Hooks.StatusBar              (statusBarProp, withEasySB)
 import           XMonad.Layout.MultiToggle
   ( Toggle (..)
@@ -343,6 +348,7 @@ myManageHook =
   mconcat
     [ className =? "Gimp" --> doFloat
     , className =? "ncmpcpp" --> doCenterFloat
+    , className =? "qutebrowser-fzfmenu" --> doSideFloat NC
     , isDialog --> doFloat
     ]
 
