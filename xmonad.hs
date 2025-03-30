@@ -131,7 +131,9 @@ myKeys state config@(XConfig {modMask, terminal}) =
     , ((modMask .|. shiftMask, xK_l), incScreenSpacing 5 >> incWindowSpacing 5)
     ,
       ( (modMask .|. shiftMask, xK_semicolon)
-      , spawn [i|#{terminal} -c tmux -t tmux -- tmux attach|]
+      , raiseMaybe
+          (spawn [i|#{terminal} -c tmux -t tmux -- tmux attach|])
+          (className =? "tmux")
       )
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     , ((modMask, xK_Return), spawn terminal)
@@ -169,7 +171,11 @@ myKeys state config@(XConfig {modMask, terminal}) =
           createParentDirectory path
           unGrab >> spawn [i|scrot #{path}|]
       )
-    , ((modMask, xK_semicolon), spawn [i|#{terminal} -c tmux -t tmux -- tmux|])
+    , ((modMask, xK_semicolon)
+      , raiseMaybe
+          (spawn [i|#{terminal} -c tmux -t tmux -- tmux|])
+          (className =? "tmux")
+      )
     , ((modMask, xK_t), withFocused $ windows . sink)
     ,
       ( (modMask, xK_v)
