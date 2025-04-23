@@ -188,6 +188,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
       , spawn
           [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfclipmenu clipmenu|]
       )
+    , ((modMask, xK_z), spawn "betterlockscreen --quiet --lock --off 3")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
     , ((noModMask, xK_F10), spawn "wallpaper --pick")
     ,
@@ -312,6 +313,9 @@ help =
     -- quit, or restart
     mod-Shift-c  Quit xmonad
     mod-c        Restart xmonad
+
+    -- Lock screen
+    mod-z        Lock screen with betterlockscreen
 
     -- Workspaces & screens
     mod-[1..9]        Switch to workSpace N
