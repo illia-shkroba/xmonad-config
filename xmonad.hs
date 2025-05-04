@@ -382,7 +382,6 @@ myStartupHook = do
   -- `spawnOnce` ensures that a command is executed only once, even when
   -- `xmonad` is reloaded.
   spawnOnce "picom &"
-  spawnOnce "toggle-language"
   spawnOnce "wallpaper --load"
 
 myXmobarPP :: PP
