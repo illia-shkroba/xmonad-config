@@ -162,7 +162,9 @@ myKeys state config@(XConfig {modMask, terminal}) =
           (className =? "ncmpcpp")
       )
     , ((modMask, xK_o), killOthers)
-    , ((modMask, xK_p), spawn "passmenu")
+    , ( (modMask, xK_p), spawn
+        [i|FZF_TERMINAL='#{terminal} -c fzfpassmenu -t fzfpassmenu' fzfpassmenu|]
+    )
     , ((modMask, xK_q), kill)
     ,
       ( (modMask, xK_s)
@@ -373,6 +375,7 @@ myManageHook =
     , className =? "qutebrowser-fzfmenu" --> doSideFloat NC
     , className =? "clipmenu-fzfmenu" --> doSideFloat NC
     , className =? "pfilemenu-fzfmenu" --> doSideFloat NC
+    , className =? "fzfpassmenu" --> doSideFloat NC
     , isDialog --> doFloat
     ]
 
