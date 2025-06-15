@@ -376,6 +376,7 @@ myManageHook =
     , className =? "clipmenu-fzfmenu" --> doSideFloat NC
     , className =? "pfilemenu-fzfmenu" --> doSideFloat NC
     , className =? "fzfpassmenu" --> doSideFloat NC
+    , className =? "qute-pass-fzfmenu" --> doSideFloat NC
     , isDialog --> doFloat
     ]
 
