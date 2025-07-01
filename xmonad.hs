@@ -136,6 +136,11 @@ myKeys state config@(XConfig {modMask, terminal}) =
           (className =? "tmux")
       )
     , ((modMask .|. shiftMask, xK_t), sinkAll)
+    ,
+    ( (modMask .|. shiftMask, xK_y)
+    , spawn
+        [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfclipmenu clipmenu|]
+    )
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
     , ((modMask, xK_c), spawn restartXmonad)
@@ -188,7 +193,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_y)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfclipmenu clipmenu|]
+          [i|FZF_TERMINAL='#{terminal} -c dictmenu -t dictmenu' dictmenu|]
       )
     , ((modMask, xK_z), spawn "betterlockscreen --quiet --lock --off 3")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
@@ -279,7 +284,8 @@ help =
     mod-n            Launch ncmpcpp
     mod-p            Launch passmenu
     mod-Shift-p      Launch pfilemenu
-    mod-y            Launch clipmenu
+    mod-y            Launch dictmenu
+    mod-Shift-y      Launch clipmenu
     mod-e            Toggle screenkey
     mod-s            Take a screenshot
     mod-f            Toggle fullscreen
@@ -377,6 +383,7 @@ myManageHook =
     , className =? "pfilemenu-fzfmenu" --> doSideFloat NC
     , className =? "fzfpassmenu" --> doSideFloat NC
     , className =? "qute-pass-fzfmenu" --> doSideFloat NC
+    , className =? "dictmenu" --> doSideFloat NC
     , isDialog --> doFloat
     ]
 
