@@ -120,10 +120,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     ,
       ( (modMask .|. shiftMask, xK_s)
-      , do
-          path <- screenshotPath
-          createParentDirectory path
-          unGrab >> spawn [i|scrot -s #{path}|]
+      , unGrab >> spawn [i|scrot --select - | xclip -selection clipboard -target image/png|]
       )
     , ((modMask .|. shiftMask, xK_slash), helpCommand)
     , ((modMask .|. shiftMask, xK_space), setLayout $ layoutHook config)
