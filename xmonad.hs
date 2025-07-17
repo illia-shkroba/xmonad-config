@@ -381,6 +381,7 @@ myManageHook =
     , className =? "fzfpassmenu" --> doSideFloat NC
     , className =? "qute-pass-fzfmenu" --> doSideFloat NC
     , className =? "dictmenu" --> doSideFloat NC
+    , className =? "TelegramDesktop" <&&> title =? "Media viewer" --> doCenterFloat
     , isDialog --> doFloat
     ]
 
