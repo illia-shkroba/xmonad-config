@@ -136,7 +136,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
     ( (modMask .|. shiftMask, xK_y)
     , spawn
-        [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfclipmenu clipmenu|]
+        [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfmenu CM_LAUNCHER_PASS_DMENU_ARGS=0 clipmenu|]
     )
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
