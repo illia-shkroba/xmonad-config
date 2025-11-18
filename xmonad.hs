@@ -40,7 +40,7 @@ import           XMonad.Hooks.DynamicLog
   )
 import           XMonad.Hooks.EwmhDesktops           (ewmh, ewmhFullscreen)
 import           XMonad.Hooks.ManageHelpers
-  ( Side (NC)
+  ( Side (NC, SC)
   , doCenterFloat
   , doSideFloat
   , isDialog
@@ -381,6 +381,7 @@ myManageHook =
     , className =? "fzfpassmenu" --> doSideFloat NC
     , className =? "qute-pass-fzfmenu" --> doSideFloat NC
     , className =? "dictmenu" --> doSideFloat NC
+    , className =? "qutebrowser-command" --> doSideFloat SC
     , className =? "TelegramDesktop" <&&> title =? "Media viewer" --> doCenterFloat
     , isDialog --> doFloat
     ]
