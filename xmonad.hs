@@ -83,7 +83,7 @@ main = do
     $ myConfig state
   where
     toggleBarKey :: XConfig Layout -> (KeyMask, KeySym)
-    toggleBarKey XConfig {modMask} = (modMask .|. shiftMask, xK_b)
+    toggleBarKey XConfig {modMask} = (modMask .|. shiftMask, xK_r)
 
 myConfig :: MVar State -> XConfig _layout
 myConfig state =
@@ -109,6 +109,7 @@ myKeys :: MVar State -> XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 myKeys state config@(XConfig {modMask, terminal}) =
   Map.fromList
     [ ((mod1Mask, xK_Tab), mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
+    , ((modMask .|. shiftMask, xK_b), runOrRaise "brave" (className =? "brave"))
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
     , ((modMask .|. shiftMask, xK_equal), setScreenWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
@@ -278,6 +279,7 @@ help =
     mod-d            Launch dmenu
     mod-q            Close/kill the focused window
     mod-b            Launch qutebrowser
+    mod-Shift-b      Launch brave
     mod-n            Launch ncmpcpp
     mod-p            Launch passmenu
     mod-Shift-p      Launch pfilemenu
@@ -342,6 +344,9 @@ help =
     mod-button1  Set the window to floating mode and move by dragging
     mod-button2  Raise the window to the top of the stack
     mod-button3  Set the window to floating mode and resize by dragging
+
+    -- Bar
+    mod-Shift-r  Toggle bar
 
     -- Volume
     F2  Decrease volume of a default sink
