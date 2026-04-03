@@ -142,7 +142,11 @@ myKeys state config@(XConfig {modMask, terminal}) =
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
     , ((modMask, xK_c), spawn restartXmonad)
-    , ((modMask, xK_d), spawn "dmenu_run")
+    ,
+      ( (modMask, xK_d)
+      , spawn
+          [i|FZF_TERMINAL='#{terminal} -c fzfmenu-run -t fzfmenu-run' fzfmenu-run|]
+      )
     ,
       ( (modMask, xK_e)
       , liftIO . modifyMVar_ state $ \State {screenkeyEnabled} ->
@@ -276,7 +280,7 @@ help =
     mod-Enter        Launch st
     mod-;            Launch tmux
     mod-:            Launch tmux attach
-    mod-d            Launch dmenu
+    mod-d            Launch fzfmenu-run
     mod-q            Close/kill the focused window
     mod-b            Launch qutebrowser
     mod-Shift-b      Launch brave
@@ -383,6 +387,7 @@ myManageHook =
     , className =? "qutebrowser-fzfmenu" --> doSideFloat NC
     , className =? "clipmenu-fzfmenu" --> doSideFloat NC
     , className =? "pfilemenu-fzfmenu" --> doSideFloat NC
+    , className =? "fzfmenu-run" --> doSideFloat NC
     , className =? "fzfpassmenu" --> doSideFloat NC
     , className =? "qute-pass-fzfmenu" --> doSideFloat NC
     , className =? "dictmenu" --> doSideFloat NC
