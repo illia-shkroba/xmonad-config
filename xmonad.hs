@@ -117,7 +117,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask .|. shiftMask, xK_p)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} --class=pfilemenu-fzfmenu --title=pfilemenu' pfilemenu|]
+          [i|FZF_TERMINAL='#{terminal} --class=local.pfilemenu-fzfmenu --title=pfilemenu' pfilemenu|]
       )
     ,
       ( (modMask .|. shiftMask, xK_s)
@@ -130,14 +130,14 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask .|. shiftMask, xK_semicolon)
       , raiseMaybe
-          (spawn [i|#{terminal} --class=tmux --title=tmux -e tmux attach|])
-          (className =? "tmux")
+          (spawn [i|#{terminal} --class=local.tmux --title=tmux -e tmux attach|])
+          (className =? "local.tmux")
       )
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     ,
     ( (modMask .|. shiftMask, xK_y)
     , spawn
-        [i|FZF_TERMINAL='#{terminal} --class=clipmenu-fzfmenu --title=clipmenu' CM_LAUNCHER=fzfmenu CM_LAUNCHER_PASS_DMENU_ARGS=0 clipmenu|]
+        [i|FZF_TERMINAL='#{terminal} --class=local.clipmenu-fzfmenu --title=clipmenu' CM_LAUNCHER=fzfmenu CM_LAUNCHER_PASS_DMENU_ARGS=0 clipmenu|]
     )
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
@@ -145,7 +145,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_d)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} --class=fzfmenu-run --title=fzfmenu-run' fzfmenu-run|]
+          [i|FZF_TERMINAL='#{terminal} --class=local.fzfmenu-run --title=fzfmenu-run' fzfmenu-run|]
       )
     ,
       ( (modMask, xK_e)
@@ -165,12 +165,12 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_n)
       , raiseMaybe
-          (spawn [i|#{terminal} --class=ncmpcpp --title=ncmpcpp -e ncmpcpp|])
-          (className =? "ncmpcpp")
+          (spawn [i|#{terminal} --class=local.ncmpcpp --title=ncmpcpp -e ncmpcpp|])
+          (className =? "local.ncmpcpp")
       )
     , ((modMask, xK_o), killOthers)
     , ( (modMask, xK_p), spawn
-        [i|FZF_TERMINAL='#{terminal} --class=fzfpassmenu --title=fzfpassmenu' fzfpassmenu|]
+        [i|FZF_TERMINAL='#{terminal} --class=local.fzfpassmenu --title=fzfpassmenu' fzfpassmenu|]
     )
     , ((modMask, xK_q), kill)
     ,
@@ -182,8 +182,8 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     , ((modMask, xK_semicolon)
       , raiseMaybe
-          (spawn [i|#{terminal} --class=tmux --title=tmux -e tmux|])
-          (className =? "tmux")
+          (spawn [i|#{terminal} --class=local.tmux --title=tmux -e tmux|])
+          (className =? "local.tmux")
       )
     , ((modMask, xK_t), withFocused $ windows . sink)
     ,
@@ -195,7 +195,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_y)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} --class=dictmenu --title=dictmenu' dictmenu|]
+          [i|FZF_TERMINAL='#{terminal} --class=local.dictmenu --title=dictmenu' dictmenu|]
       )
     , ((modMask, xK_z), spawn "betterlockscreen --quiet --lock --off 3")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
@@ -383,14 +383,14 @@ myManageHook :: ManageHook
 myManageHook =
   mconcat
     [ className =? "Gimp" --> doFloat
-    , className =? "ncmpcpp" --> doCenterFloat
-    , className =? "qutebrowser-fzfmenu" --> doSideFloat NC
-    , className =? "clipmenu-fzfmenu" --> doSideFloat NC
-    , className =? "pfilemenu-fzfmenu" --> doSideFloat NC
-    , className =? "fzfmenu-run" --> doSideFloat NC
-    , className =? "fzfpassmenu" --> doSideFloat NC
-    , className =? "qute-pass-fzfmenu" --> doSideFloat NC
-    , className =? "dictmenu" --> doSideFloat NC
+    , className =? "local.ncmpcpp" --> doCenterFloat
+    , className =? "local.qutebrowser-fzfmenu" --> doSideFloat NC
+    , className =? "local.clipmenu-fzfmenu" --> doSideFloat NC
+    , className =? "local.pfilemenu-fzfmenu" --> doSideFloat NC
+    , className =? "local.fzfmenu-run" --> doSideFloat NC
+    , className =? "local.fzfpassmenu" --> doSideFloat NC
+    , className =? "local.qute-pass-fzfmenu" --> doSideFloat NC
+    , className =? "local.dictmenu" --> doSideFloat NC
     , className =? "qutebrowser-command" --> doSideFloat SC
     , className =? "TelegramDesktop" <&&> title =? "Media viewer" --> doCenterFloat
     , isDialog --> doFloat
