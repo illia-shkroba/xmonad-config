@@ -117,7 +117,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask .|. shiftMask, xK_p)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} -c pfilemenu-fzfmenu -t pfilemenu' pfilemenu|]
+          [i|FZF_TERMINAL='#{terminal} --class=pfilemenu-fzfmenu --title=pfilemenu' pfilemenu|]
       )
     ,
       ( (modMask .|. shiftMask, xK_s)
@@ -130,14 +130,14 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask .|. shiftMask, xK_semicolon)
       , raiseMaybe
-          (spawn [i|#{terminal} -c tmux -t tmux -- tmux attach|])
+          (spawn [i|#{terminal} --class=tmux --title=tmux -e tmux attach|])
           (className =? "tmux")
       )
     , ((modMask .|. shiftMask, xK_t), sinkAll)
     ,
     ( (modMask .|. shiftMask, xK_y)
     , spawn
-        [i|FZF_TERMINAL='#{terminal} -c clipmenu-fzfmenu -t clipmenu' CM_LAUNCHER=fzfmenu CM_LAUNCHER_PASS_DMENU_ARGS=0 clipmenu|]
+        [i|FZF_TERMINAL='#{terminal} --class=clipmenu-fzfmenu --title=clipmenu' CM_LAUNCHER=fzfmenu CM_LAUNCHER_PASS_DMENU_ARGS=0 clipmenu|]
     )
     , ((modMask, xK_Return), spawn terminal)
     , ((modMask, xK_b), runOrRaise "qutebrowser" (className =? "qutebrowser"))
@@ -145,7 +145,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_d)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} -c fzfmenu-run -t fzfmenu-run' fzfmenu-run|]
+          [i|FZF_TERMINAL='#{terminal} --class=fzfmenu-run --title=fzfmenu-run' fzfmenu-run|]
       )
     ,
       ( (modMask, xK_e)
@@ -165,12 +165,12 @@ myKeys state config@(XConfig {modMask, terminal}) =
     ,
       ( (modMask, xK_n)
       , raiseMaybe
-          (spawn [i|#{terminal} -c ncmpcpp -t ncmpcpp -- ncmpcpp|])
+          (spawn [i|#{terminal} --class=ncmpcpp --title=ncmpcpp -e ncmpcpp|])
           (className =? "ncmpcpp")
       )
     , ((modMask, xK_o), killOthers)
     , ( (modMask, xK_p), spawn
-        [i|FZF_TERMINAL='#{terminal} -c fzfpassmenu -t fzfpassmenu' fzfpassmenu|]
+        [i|FZF_TERMINAL='#{terminal} --class=fzfpassmenu --title=fzfpassmenu' fzfpassmenu|]
     )
     , ((modMask, xK_q), kill)
     ,
@@ -182,7 +182,7 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     , ((modMask, xK_semicolon)
       , raiseMaybe
-          (spawn [i|#{terminal} -c tmux -t tmux -- tmux|])
+          (spawn [i|#{terminal} --class=tmux --title=tmux -e tmux|])
           (className =? "tmux")
       )
     , ((modMask, xK_t), withFocused $ windows . sink)
@@ -190,12 +190,12 @@ myKeys state config@(XConfig {modMask, terminal}) =
       ( (modMask, xK_v)
       , do
           path <- today >>= journalPath
-          spawn [i|#{terminal} -- nvim #{path}|]
+          spawn [i|#{terminal} -e nvim #{path}|]
       )
     ,
       ( (modMask, xK_y)
       , spawn
-          [i|FZF_TERMINAL='#{terminal} -c dictmenu -t dictmenu' dictmenu|]
+          [i|FZF_TERMINAL='#{terminal} --class=dictmenu --title=dictmenu' dictmenu|]
       )
     , ((modMask, xK_z), spawn "betterlockscreen --quiet --lock --off 3")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
