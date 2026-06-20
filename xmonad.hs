@@ -74,7 +74,7 @@ import           XMonad.Util.SpawnOnce               (spawnOnce)
 
 main :: IO ()
 main = do
-  state <- newMVar State {screenkeyEnabled = False}
+  state <- newMVar State {screenkeyEnabled = False, dictationEnabled = False}
   xmonad
     . configureMRU
     . ewmhFullscreen
@@ -149,11 +149,11 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     ,
       ( (modMask, xK_e)
-      , liftIO . modifyMVar_ state $ \State {screenkeyEnabled} ->
+      , liftIO . modifyMVar_ state $ \s@State {screenkeyEnabled} ->
           if screenkeyEnabled
-            then State {screenkeyEnabled = False} <$ spawn "killall screenkey"
+            then s {screenkeyEnabled = False} <$ spawn "killall screenkey"
             else
-              State {screenkeyEnabled = True}
+              s {screenkeyEnabled = True}
                 <$ runProcessWithInputAndWait
                   "screenkey"
                   ["-t", "0.5", "-s", "small", "--opacity", "0.3"]
@@ -199,6 +199,15 @@ myKeys state config@(XConfig {modMask, terminal}) =
       )
     , ((modMask, xK_z), spawn "betterlockscreen --quiet --lock --off 3")
     , ((noModMask .|. shiftMask, xK_F10), spawn "wallpaper --random")
+    ,
+      ( (modMask, xK_r)
+      , liftIO . modifyMVar_ state $ \s@State {dictationEnabled} ->
+          if dictationEnabled
+            then s {dictationEnabled = False} <$ spawn "nerd-dictation end"
+            else
+              s {dictationEnabled = True}
+                <$ spawn "nerd-dictation begin --vosk-model-dir=\"${XDG_CONFIG_HOME:-$HOME/.config}/nerd-dictation/model\""
+      )
     , ((noModMask, xK_F10), spawn "wallpaper --pick")
     ,
       ( (noModMask, xK_F11)
@@ -290,6 +299,7 @@ help =
     mod-y            Launch dictmenu
     mod-Shift-y      Launch clipmenu
     mod-e            Toggle screenkey
+    mod-r            Toggle dictation (nerd-dictation)
     mod-s            Take a screenshot
     mod-f            Toggle fullscreen
     mod-Space        Rotate through the available layout algorithms
@@ -441,4 +451,5 @@ myXmobarPP =
 data State
   = State
       { screenkeyEnabled :: Bool
+      , dictationEnabled :: Bool
       }
