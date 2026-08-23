@@ -98,7 +98,7 @@ myConfig state =
     , modMask = mod4Mask -- rebind mod to the super key
     , normalBorderColor = "#050508"
     , startupHook = myStartupHook
-    , terminal = "ghostty"
+    , terminal = "st"
     , workspaces = workspaces
     }
   where
@@ -277,7 +277,7 @@ help =
     The modifier key used is 'Super'. Defined keybindings:
 
     -- launching and killing programs
-    mod-Enter        Launch ghostty
+    mod-Enter        Launch st
     mod-;            Launch tmux
     mod-:            Launch tmux attach
     mod-d            Launch fzfmenu-run
