@@ -109,7 +109,7 @@ myKeys :: MVar State -> XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 myKeys state config@(XConfig {modMask, terminal}) =
   Map.fromList
     [ ((mod1Mask, xK_Tab), mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
-    , ((modMask .|. shiftMask, xK_b), runOrRaise "brave" (className =? "brave"))
+    , ((modMask .|. shiftMask, xK_b), runOrRaise "brave" (className =? "Brave-browser"))
     , ((modMask .|. shiftMask, xK_c), io exitSuccess)
     , ((modMask .|. shiftMask, xK_equal), setScreenWindowSpacing 5)
     , ((modMask .|. shiftMask, xK_g), toggleSmartSpacing)
